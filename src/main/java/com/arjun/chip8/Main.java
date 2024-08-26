@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String romName = "PONG.ch8";
+        String romName = "IBM.ch8";
 
         InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(romName);
 

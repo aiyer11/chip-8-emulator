@@ -68,7 +68,7 @@ public class CPU {
 
     // Decodes and executes the opcode
     public void decodeAndExecute(short opcode) {
-        short x = (short) ((opcode & 0x0F00) / 256); // Second nibble (Used to get x in some instructions)
+        short x = (short) ((opcode & 0x0F00) >> 8); // Second nibble (Used to get x in some instructions)
         short y = (short) ((opcode & 0x00F0) >> 4); // Third nibble (Used to get y in some instructions)
         short n = (short) (opcode & 0x000F); // Fourth nibble (Used to get n in some instructions)
         short nn = (short) (opcode & 0x00FF); // Third and fourth nibbled (Used to get nn in some instructions)
