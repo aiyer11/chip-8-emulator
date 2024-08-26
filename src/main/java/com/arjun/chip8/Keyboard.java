@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Keyboard extends KeyAdapter {
     private int[] keyboard;
-    private final char[] allowedKeys = {'1','2','3','4',
+    private final Character[] allowedKeys = {'1','2','3','4',
                                   'q','w','e','r',
                                    'a','s','d','f',
                                     'z','x','c','v'};

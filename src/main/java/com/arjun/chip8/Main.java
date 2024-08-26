@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String romName = "IBM Logo.ch8";
+        String romName = "PONG.ch8";
 
         InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(romName);
 
@@ -13,7 +13,7 @@ public class Main {
         int length = inputStream.read(program);
         CPU cpu = new CPU(length);
         cpu.loadProgram(program);
-        int opcode = 0;
+        short opcode = 0;
         while(true)
         {
             opcode = cpu.fetchOpcode();
