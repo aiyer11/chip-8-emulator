@@ -61,15 +61,15 @@ public class CPU {
 
     // Fetching the opcode
     public short fetchOpcode(){
-        short opcode = (short) ((this.memory[this.pc] << 8) | (this.memory[this.pc+1]));
+        short opcode = (short) ((this.memory[this.pc] << 8) | (this.memory[this.pc+1]) & 0xFF);
         this.pc += 2;
         return opcode;
     }
 
     // Decodes and executes the opcode
     public void decodeAndExecute(short opcode) {
-        short x = (short) ((opcode & 0x0F00) >> 8); // Second nibble (Used to get x in some instructions)
-        short y = (short) ((opcode & 0x00F0) >> 4); // Third nibble (Used to get y in some instructions)
+        short x = (short) ((opcode & 0x0F00) >>> 8); // Second nibble (Used to get x in some instructions)
+        short y = (short) ((opcode & 0x00F0) >>> 4); // Third nibble (Used to get y in some instructions)
         short n = (short) (opcode & 0x000F); // Fourth nibble (Used to get n in some instructions)
         short nn = (short) (opcode & 0x00FF); // Third and fourth nibbled (Used to get nn in some instructions)
         short nnn = (short) (opcode & 0x0FFF); // Second, third and fourth nibble (Used to get nnn in some instructions)
@@ -77,15 +77,14 @@ public class CPU {
         String opcode_hex = String.format("%04X", opcode);
         LOG.info("Opcode: {}" , opcode_hex);
 
-        switch(opcode & nn) {
+        switch(opcode) {
                     case 0x00E0:
                         LOG.info("Instruction: 00E0");
                         this.display.clearDisplay(); // Clears the display
                         break;
                     case 0x00EE:
                         LOG.info("Instruction: 00EE");
-                        this.pc = this.sp; // Sets the pc to the stack pointer
-                        this.sp--; //Decrements the stack pointer
+                        this.pc =  this.stack[this.sp--]; // Sets the pc to the stack pointer and decrement the stack pointer
                         break;
         }
 
@@ -126,7 +125,14 @@ public class CPU {
                 break;
             case 0x7000:
                 LOG.info("Instruction: 7xnn");
-                this.registers[x] += nn; // Set register x to x + nn
+                int result = this.registers[x] + nn;
+                if(result >= 256) // Checking for overflow
+                {
+                    this.registers[x] = result - 256;
+                }
+                else {
+                    this.registers[x] = result;
+        }
                 break;
             case 0xA000:
                 LOG.info("Instruction: Annn");
@@ -186,18 +192,19 @@ public class CPU {
                 break;
             case 0x8004:
                 LOG.info("Instruction: 8xy4");
-                this.registers[x] += registers[y]; // Set register x to x + y
-                this.registers[0xF] = this.registers[x] > 0xFF ? 1:0; // If register x is greater than 255 set register F to 1 else 0
+                int sum = this.registers[x] + this.registers[y];
+                this.registers[0xF] = sum > 0xFF ? 1:0; // If register x is greater than 255 set register F to 1 else 0
+                this.registers[x] = sum & 0xFF; //Set register x to x + y
                 break;
             case 0x8005:
                 LOG.info("Instruction: 8xy5");
                 this.registers[0xF] = this.registers[x] > this.registers[y] ? 1:0; // If register x is greater than register y then set register F to 1 else 0
-                this.registers[x] -= this.registers[y]; // Set register x to x - y
+                this.registers[x] = (this.registers[x] - this.registers[y] & 0xFF); // Set register x to x - y
                 break;
             case 0x8006:
                 LOG.info("Instruction: 8xy6");
-                this.registers[0xF] = this.registers[x] & 0x1; // Set register F to lsb of x
-                this.registers[x] = this.registers[x] >> 1; // Set register x to x divided by 2
+                this.registers[0xF] = (this.registers[x] & 0x1) == 1 ? 1:0; // Set register F to 1 or 0 depending on what the lsb it
+                this.registers[x] = this.registers[x] >>> 1; // Set register x to x divided by 2
                 break;
             case 0x8007:
                 LOG.info("Instruction: 8xy7");
@@ -206,12 +213,12 @@ public class CPU {
                 break;
             case 0x800E:
                 LOG.info("Instruction: 8xy8");
-                this.registers[0xF] = (this.registers[x] >> 7) & 0x1; // Set register F to msb of x
+                this.registers[0xF] = this.registers[x] >>> 7 & 0x1; // Set register F to 1 if the msb of x equals 1 or 0 if its equal to zero
                 this.registers[x] = this.registers[x] << 1; //Set register x to x * 2
                 break;
             case 0x9000:
                 LOG.info("Instruction: 9xy0");
-                if(this.registers[x] != registers[y]) // If register x is not equal to y increment pc by 2
+                if(this.registers[x] != this.registers[y]) // If register x is not equal to y increment pc by 2
                 {
                     this.pc+=2;
                 }
@@ -234,7 +241,7 @@ public class CPU {
                 break;
             case 0xF007:
                 LOG.info("Instruction: Fx07");
-                registers[x] = this.delayTimer; // Set register x to delay timer
+                this.registers[x] = this.delayTimer; // Set register x to delay timer
                 break;
             case 0xF00A:
                 LOG.info("Instruction: Fx0A");

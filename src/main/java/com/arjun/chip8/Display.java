@@ -31,4 +31,5 @@ public class Display {
             Arrays.fill(this.display[i], (byte) 0);
         }
     }
+
 }

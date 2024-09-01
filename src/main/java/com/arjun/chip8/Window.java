@@ -2,18 +2,15 @@ package com.arjun.chip8;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 public class Window extends JPanel{
 
     private int width = 600;
     private int height = 600;
 
-    private Display display;
+    private final Display display;
 
     public Window(Display display, Keyboard keyboard)
     {
