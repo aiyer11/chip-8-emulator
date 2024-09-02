@@ -5,4 +5,5 @@ I developed a CHIP-8 emulator in Java as an introductory project in emulator dev
 ![image](https://github.com/user-attachments/assets/a25fe598-7007-4a94-9a70-a3d71c694a8e)
 
 # Pong 
-![image](https://github.com/user-attachments/assets/ca93f6f2-1b47-4bef-9492-3764d3a38969)
+![image](https://github.com/user-attachments/assets/d42aef0e-b3cd-47b8-b18e-58ab36655b29)
+
