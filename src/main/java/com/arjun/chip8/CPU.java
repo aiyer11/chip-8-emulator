@@ -132,7 +132,7 @@ public class CPU {
                 }
                 else {
                     this.registers[x] = result;
-        }
+                }
                 break;
             case 0xA000:
                 LOG.info("Instruction: Annn");
@@ -157,7 +157,7 @@ public class CPU {
                     px = this.memory[this.I + row]; // Setting pixel to current value at register I plus column j
                     for(int col = 0; col < 8; col++)
                     {
-                        if((px & (0x80 >> col)) != 0) // Checking if the current pixel is equal to 1
+                        if((px & (0x80 >>> col)) != 0) // Checking if the current pixel is equal to 1
                         {
                             byte pixel = this.display.getPixel(row + this.registers[y],col + this.registers[x]);
                             if(pixel == 1) // Checking if the pixel on display is equal to one
@@ -193,23 +193,23 @@ public class CPU {
             case 0x8004:
                 LOG.info("Instruction: 8xy4");
                 int sum = this.registers[x] + this.registers[y];
-                this.registers[0xF] = sum > 0xFF ? 1:0; // If register x is greater than 255 set register F to 1 else 0
+                this.registers[0xF] = sum > 0xFF ? 1:0; // If register x + register y is greater than 255 set register F to 1 else 0
                 this.registers[x] = sum & 0xFF; //Set register x to x + y
                 break;
             case 0x8005:
                 LOG.info("Instruction: 8xy5");
                 this.registers[0xF] = this.registers[x] > this.registers[y] ? 1:0; // If register x is greater than register y then set register F to 1 else 0
-                this.registers[x] = (this.registers[x] - this.registers[y] & 0xFF); // Set register x to x - y
+                this.registers[x] = (this.registers[x] - this.registers[y]) & 0xFF; // Set register x to x - y
                 break;
             case 0x8006:
                 LOG.info("Instruction: 8xy6");
                 this.registers[0xF] = (this.registers[x] & 0x1) == 1 ? 1:0; // Set register F to 1 or 0 depending on what the lsb it
-                this.registers[x] = this.registers[x] >>> 1; // Set register x to x divided by 2
+                this.registers[x] = this.registers[x] >> 1; // Set register x to x divided by 2
                 break;
             case 0x8007:
                 LOG.info("Instruction: 8xy7");
                 this.registers[0xF] = this.registers[y] > this.registers[x] ? 1:0; // Set register F to 1 if y is greater than x else 0
-                this.registers[x] = this.registers[y] - this.registers[x];
+                this.registers[x] = (this.registers[y] - this.registers[x]) & 0xFF;
                 break;
             case 0x800E:
                 LOG.info("Instruction: 8xy8");

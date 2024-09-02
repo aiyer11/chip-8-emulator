@@ -5,10 +5,9 @@ import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String romName = "test_opcode.ch8";
+        String romName = "invaders.ch8";
 
         InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(romName);
-
         byte[] program = new byte[4096];
         int length = inputStream.read(program);
         CPU cpu = new CPU(length);
