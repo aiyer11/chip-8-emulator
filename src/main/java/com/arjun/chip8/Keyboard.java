@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 public class Keyboard extends KeyAdapter {
-    private int[] keyboard;
+    private final int[] keyboard;
     private final Character[] allowedKeys = {'1','2','3','4',
                                   'q','w','e','r',
                                    'a','s','d','f',

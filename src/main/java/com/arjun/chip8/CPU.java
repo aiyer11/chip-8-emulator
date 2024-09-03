@@ -15,8 +15,6 @@ public class CPU {
 
     private final Display display; // Display
 
-    private final Keyboard keyboard; // Keyboard
-
     private final Window window; // Window for graphics
 
     private final int[] keyboardRegisters;
@@ -25,7 +23,7 @@ public class CPU {
 
     private int soundTimer;
 
-    private int length;
+    private final int length;
 
     private final Logger LOG = LoggerFactory.getLogger(CPU.class);
 
@@ -34,24 +32,25 @@ public class CPU {
         this.registers = new int[16]; // 16 registers
         this.stack = new int[16]; // stack
         this.display = new Display(); //Creates a new display object
-        this.keyboard = new Keyboard(); //Creates a new keyboard object
-        this.window = new Window(this.display,this.keyboard); // Creates a new window object
+        Keyboard keyboard = new Keyboard(); //Creates a new keyboard object
+        this.window = new Window(this.display, keyboard); // Creates a new window object
         this.length = length;
-        this.keyboardRegisters = this.keyboard.getKeyboard(); // Gets current keyboard registers
+        this.keyboardRegisters = keyboard.getKeyboard(); // Gets current keyboard registers
         this.I = 0;
         this.sp = 0;
         this.pc = 0x200; // Program counter starts at 0x200
-
-        // Loads fonts into memory
-        for(int i =0; i < Font.FONT.length; i ++)
-        {
-            memory[i] = Font.FONT[i];
-        }
     }
 
     //Loads the program into memory
     public void loadProgram(byte[] romProgram)
     {
+        LOG.info("Loading fonts...");
+        // Loads fonts into memory
+        for(int i =0; i < Font.FONT.length; i ++)
+        {
+            memory[i] = Font.FONT[i];
+        }
+
         LOG.info("Loading program...");
         for(int i = 0; i < this.length; i++)
         {

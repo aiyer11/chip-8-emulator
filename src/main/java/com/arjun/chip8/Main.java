@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        String romName = "invaders.ch8";
+        String romName = "tetris.ch8";
 
         InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(romName);
         byte[] program = new byte[4096];
